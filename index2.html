@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us</title>
+  <style>
+    :root {
+      --main-bg: #f5f5f5;
+      --box-bg: #ffffffec;
+      --accent: #b57edc;
+      --accent-dark: #9d65c9;
+      --text-dark: #333;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ead6f5, var(--main-bg));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      transition: background 0.5s ease;
+background-image: url('cf.jpg');
+background-size: cover;
+
+    }
+
+    .contact-box {
+      background: var(--box-bg);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: var(--accent-dark);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text-dark);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 15px;
+      background-color: #f9f9f9;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: border 0.3s, box-shadow 0.3s, background-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      background-color: #fff;
+      box-shadow: 0 0 6px rgba(181, 126, 220, 0.6);
+      outline: none;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .char-count {
+      font-size: 0.8em;
+      text-align: right;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .error-msg {
+      font-size: 0.85em;
+      color: red;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: var(--accent-dark);
+    }
+
+    .success-toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: var(--accent);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      opacity: 0;
+      animation: fadeInToast 0.5s forwards;
+    }
+
+    @keyframes fadeInToast {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .contact-box {
+        padding: 20px;
+      }
+      .success-toast {
+        right: 10px;
+        left: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contact-box">
+    <h2>Contact Us</h2>
+    <form id="contactForm" novalidate>
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="John Doe">
+        <div class="error-msg" id="nameError">Please enter your name.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="example@mail.com">
+        <div class="error-msg" id="emailError">Please enter a valid email.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Your Message</label>
+        <textarea id="message" placeholder="Type your message..."></textarea>
+        <div class="char-count" id="charCount">0/500</div>
+        <div class="error-msg" id="messageError">Please enter a message.</div>
+      </div>
+
+      <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+  </div>
+
+  <div id="toast" class="success-toast" style="display:none;">Message sent successfully!</div>
+
+  <script>
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const messageInput = document.getElementById("message");
+    const charCount = document.getElementById("charCount");
+    const toast = document.getElementById("toast");
+
+    messageInput.addEventListener("input", () => {
+      charCount.textContent = `${messageInput.value.length}/500`;
+      if (messageInput.value.length > 500) {
+        messageInput.style.borderColor = "red";
+      } else {
+        messageInput.style.borderColor = "";
+      }
+    });
+
+    const showError = (id, condition) => {
+      const error = document.getElementById(id);
+      error.style.display = condition ? "block" : "none";
+    };
+
+    nameInput.addEventListener("input", () => {
+      showError("nameError", !nameInput.value.trim());
+    });
+
+    emailInput.addEventListener("input", () => {
+      showError("emailError", !emailInput.value.trim());
+    });
+
+    messageInput.addEventListener("input", () => {
+      showError("messageError", !messageInput.value.trim());
+    });
+
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const message = messageInput.value.trim();
+
+      const valid = name && email && message && message.length <= 500;
+
+      showError("nameError", !name);
+      showError("emailError", !email);
+      showError("messageError", !message);
+
+      if (valid) {
+        toast.style.display = "block";
+        setTimeout(() => {
+          toast.style.display = "none";
+        }, 3000);
+
+        document.getElementById("contactForm").reset();
+        charCount.textContent = "0/500";
+      }
+    });
+  </script>
+
+</body>
+</html>
